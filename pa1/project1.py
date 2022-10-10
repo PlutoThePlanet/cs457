@@ -4,9 +4,9 @@ import shutil
 cwd = os.getcwd() # keep track of which directory being used in system (when switched)
 
 # cleans up the extra '(' and ')' when taking in table data
-def listToString(arr):
-    new_string = ','.join(str(x) for x in arr)   # joins all array elements into one string
-    clean_string = new_string[1:-1]              # erase beginning and end parenthesis
+def cleanList(arr):
+    new_string = ', '.join(str(x) for x in arr)   # joins all array elements into one string
+    clean_string = new_string[1:-1]               # erase beginning and end parenthesis
     return clean_string
 
 # database creation (new folder)
@@ -37,26 +37,23 @@ def use_database(db):
     except FileNotFoundError:
         print('!Failed to use ' + db + ' because it does not exist.')
         
-# table creation (file)
+# table creation (new file with data)
 def create_tbl(tbl, data):
-    print(data)
-    new_list = listToString(data)
-    # try:
-        # with open(r'cwd', 'w') as fp:
-            # clean_data = listToString(data)
-            # for i in clean_data:   #Use for loop to run through arguments and replace , with | for the new file. 
-                # if(i == ','):
-                    # fp.write(' |')
-                # else:
-                    # fp.write(i)
-            # new_data = data[data.find('(')+1:data.rfind(')')]   #obtain information in parenthesis then remove parethesis
-            # for i in new_data:
-                # print(data[i])
-            # for i in data:
-                # data[i] = data[i].replace('(', '')
-    # except FileExistsError:
-        # print('!Failed to create table' + tbl + ' because it already exists.') 
-
+    try:
+        clean_data = cleanList(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
+        new_data = clean_data.split(', ')       # return str back to an array
+        
+        with open(tbl, 'w') as fp:
+            for i in new_data:                     # iterate through elements
+                if(i.__contains__(',')):
+                    fp.write(i[0:-1])              # write the data but ignore the , at the end of the string
+                    fp.write(' | ')                # and write a dividing ' | ' if there was a ','
+                else:
+                    fp.write(i + ' ')              # else just write the data as usual
+            fp.write('\n')
+    except FileExistsError:
+        print('!Failed to create table' + tbl + ' because it already exists.')
+        
 # table deletion (file)
 def delete_tbl(tbl):
     try:
