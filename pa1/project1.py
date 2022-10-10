@@ -1,3 +1,7 @@
+# Paige Mortensen
+# CS 457 PA 1
+# 8/9/22
+
 import os
 import shutil
 
@@ -31,10 +35,10 @@ def delete_database(dir):
 # set working database
 def use_database(db):
     try:
-        global cwd
-        cwd = home_dir
+        global cwd                            # make sure to stay in working dir (for multiple actions)
+        cwd = home_dir                        # make sure you can see all databases (go up dir tree if needed)
         cwd = os.path.join(cwd, db)
-        os.chdir(cwd)
+        os.chdir(cwd)                         # switch to desired database
         print('Using Database ' + db + '.')
     except FileNotFoundError:
         print('!Failed to use ' + db + ' because it does not exist.')
@@ -45,7 +49,7 @@ def create_tbl(tbl, data):
     new_data = clean_data.split(', ')       # return str back to an array
     
     test_file = os.path.join(cwd, tbl)
-    if(not os.path.exists(test_file)):
+    if(not os.path.exists(test_file)):             # make sure the file doesn't already exist 
         with open(tbl, 'w') as fp:
             for i in new_data:                     # iterate through elements
                 if(i.__contains__(',')):
@@ -71,7 +75,7 @@ def update_tbl(tbl, data):
     test_file = os.path.join(cwd, tbl)
     if(os.path.exists(test_file)):
         with open(tbl, 'a') as fp:
-            fp.write(' | ')
+            fp.write(' | ')                 # add divider and data to end of existing row
             for i in data:
                 fp.write(i + ' ')
         print('Table ' + tbl + ' modified.')
@@ -83,7 +87,7 @@ def query_tbl(tbl):
     test_file = os.path.join(cwd, tbl)
     if(os.path.exists(test_file)):
         with open(tbl, 'r') as fp:
-            print(fp.read())
+            print(fp.read())               # print entire entry
     else:
         print('!Failed to query table ' + tbl + ' because it does not exist.')
 
