@@ -41,8 +41,8 @@ def use_database(db):
 def create_tbl(tbl, data):
     clean_data = cleanList(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
     new_data = clean_data.split(', ')       # return str back to an array
-    
     test_file = os.path.join(cwd, tbl)
+    
     if(not os.path.exists(test_file)):
         with open(tbl, 'w') as fp:
             for i in new_data:                     # iterate through elements
@@ -52,6 +52,7 @@ def create_tbl(tbl, data):
                 else:
                     fp.write(i + ' ')              # else just write the data as usual
             fp.write('\n')
+        print('Table ' + tbl + ' created.')
     else:
         print('!Failed to create table' + tbl + ' because it already exists.')
         
