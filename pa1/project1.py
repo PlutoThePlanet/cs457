@@ -62,13 +62,21 @@ def create_tbl(tbl, data):
 def delete_tbl(tbl):
     try:
         os.remove(tbl)
-        print('Table ' + tbl + ' created.')
+        print('Table ' + tbl + ' deleted.')
     except FileNotFoundError:
         print('!Failed to delete ' + tbl + ' because it does not exist.')
 
 # table update (file)
-# def update_tbl(tbl):
-    
+def update_tbl(tbl, data):
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):
+        with open(tbl, 'a') as fp:
+            fp.write(' | ')
+            for i in data:
+                fp.write(i + ' ')
+        print('Table ' + tbl + ' modified.')
+    else:
+        print('!Failed to alter table ' + tbl + ' because it does not exist.')
 
 # table query (file)
 def query_tbl(tbl):
@@ -102,7 +110,7 @@ def main():
         elif('DROP' in input_list and 'TABLE' in input_list):
             delete_tbl(input_list[2])
         elif('ALTER' in input_list):
-            print('alter tbl')
+            update_tbl(input_list[2], input_list[4:])
         elif('SELECT' in input_list):
             query_tbl(input_list[3])
 
