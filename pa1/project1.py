@@ -39,10 +39,11 @@ def use_database(db):
         
 # table creation (new file with data)
 def create_tbl(tbl, data):
-    try:
-        clean_data = cleanList(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
-        new_data = clean_data.split(', ')       # return str back to an array
-        
+    clean_data = cleanList(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
+    new_data = clean_data.split(', ')       # return str back to an array
+    
+    test_file = os.path.join(cwd, tbl)
+    if(not os.path.exists(test_file)):
         with open(tbl, 'w') as fp:
             for i in new_data:                     # iterate through elements
                 if(i.__contains__(',')):
@@ -51,7 +52,7 @@ def create_tbl(tbl, data):
                 else:
                     fp.write(i + ' ')              # else just write the data as usual
             fp.write('\n')
-    except FileExistsError:
+    else:
         print('!Failed to create table' + tbl + ' because it already exists.')
         
 # table deletion (file)
