@@ -41,8 +41,8 @@ def use_database(db):
 def create_tbl(tbl, data):
     clean_data = cleanList(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
     new_data = clean_data.split(', ')       # return str back to an array
-    test_file = os.path.join(cwd, tbl)
     
+    test_file = os.path.join(cwd, tbl)
     if(not os.path.exists(test_file)):
         with open(tbl, 'w') as fp:
             for i in new_data:                     # iterate through elements
@@ -69,8 +69,13 @@ def delete_tbl(tbl):
     
 
 # table query (file)
-#def query_tbl():
-    
+def query_tbl(tbl):
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):
+        with open(tbl, 'r') as fp:
+            print(fp.read())
+    else:
+        print('!Failed to query table ' + tbl + ' because it does not exist.')
 
 # main fct that handles user input
 def main():
@@ -97,7 +102,7 @@ def main():
         elif('ALTER' in input_list):
             print('alter tbl')
         elif('SELECT' in input_list):
-            print('tbl data')
+            query_tbl(input_list[3])
 
 # ensures main fct is called first
 if __name__ == "__main__":
