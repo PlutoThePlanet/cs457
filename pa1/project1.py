@@ -3,7 +3,13 @@ import shutil
 
 cwd = os.getcwd() # keep track of which directory being used in system (when switched)
 
-# database creation (folder)
+# cleans up the extra '(' and ')' when taking in table data
+def listToString(arr):
+    new_string = ','.join(str(x) for x in arr)   # joins all array elements into one string
+    clean_string = new_string[1:-1]              # erase beginning and end parenthesis
+    return clean_string
+
+# database creation (new folder)
 def create_database(new_dir):
     try:
         path = os.path.join(cwd, new_dir)
@@ -12,7 +18,7 @@ def create_database(new_dir):
     except FileExistsError:
         print('!Failed to create database' + new_dir + ' because it already exists.')
 
-# database deletion (folder)
+# database deletion (delete folder)
 def delete_database(dir):
     try:
         path = os.path.join(cwd, dir)
@@ -32,12 +38,32 @@ def use_database(db):
         print('!Failed to use ' + db + ' because it does not exist.')
         
 # table creation (file)
-#def create_tbl():
-    
+def create_tbl(tbl, data):
+    print(data)
+    new_list = listToString(data)
+    # try:
+        # with open(r'cwd', 'w') as fp:
+            # clean_data = listToString(data)
+            # for i in clean_data:   #Use for loop to run through arguments and replace , with | for the new file. 
+                # if(i == ','):
+                    # fp.write(' |')
+                # else:
+                    # fp.write(i)
+            # new_data = data[data.find('(')+1:data.rfind(')')]   #obtain information in parenthesis then remove parethesis
+            # for i in new_data:
+                # print(data[i])
+            # for i in data:
+                # data[i] = data[i].replace('(', '')
+    # except FileExistsError:
+        # print('!Failed to create table' + tbl + ' because it already exists.') 
 
 # table deletion (file)
-#def felete_tbl():
-    
+def delete_tbl(tbl):
+    try:
+        os.remove(tbl)
+        print('Table ' + tbl + ' created.')
+    except FileNotFoundError:
+        print('!Failed to delete ' + tbl + ' because it does not exist.')
 
 # table update (file)
 #def update_tbl():
@@ -49,7 +75,6 @@ def use_database(db):
 
 # main fct that handles user input
 def main():
-    print(cwd)
     while (True):
         user_in = input('')                                           # take in and parse user input
         user_in = user_in.replace(';', '')
@@ -67,9 +92,9 @@ def main():
         elif('USE' in input_list):
             use_database(input_list[1])
         elif('CREATE' in input_list and 'TABLE' in input_list):
-            print('create tbl')
+            create_tbl(input_list[2], input_list[3:])
         elif('DROP' in input_list and 'TABLE' in input_list):
-            print('delete tbl')
+            delete_tbl(input_list[2])
         elif('ALTER' in input_list):
             print('alter tbl')
         elif('SELECT' in input_list):
