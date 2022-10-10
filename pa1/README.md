@@ -3,7 +3,7 @@
 ## Overview
 python 3: Run with command `python project1.py < PA1_test.sql` or write desired queries by hand when prompted by terminal
 
-In this assignment, we were required to write a program that allows a database user to manage database metadata with simple functions such as add, delete, etc. Databases and tables are both used to assist in organizing this data.
+In this assignment, we were required to write a program that allows a database user to manage database metadata with simple functions such as add, delete, etc. Databases and tables are both used to assist in organizing this data. In order to handle multiple databases, each database consists of its own folder of multiple tables. Each table is a file nested within a database/folder. Each database can hold multiple tables/files and all metadata is held in a table/file.
 
 
 
