@@ -1,8 +1,8 @@
 import os
 import shutil
 
-cwd = os.getcwd() # keep track of which directory being used in system (when switched)
-home_dir = os.getcwd()
+cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
+home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
 
 # cleans up the extra '(' and ')' when taking in table data
 def cleanList(arr):
