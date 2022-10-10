@@ -2,6 +2,7 @@ import os
 import shutil
 
 cwd = os.getcwd() # keep track of which directory being used in system (when switched)
+home_dir = os.getcwd()
 
 # cleans up the extra '(' and ')' when taking in table data
 def cleanList(arr):
@@ -31,6 +32,7 @@ def delete_database(dir):
 def use_database(db):
     try:
         global cwd
+        cwd = home_dir
         cwd = os.path.join(cwd, db)
         os.chdir(cwd)
         print('Using Database ' + db + '.')
@@ -51,7 +53,7 @@ def create_tbl(tbl, data):
                     fp.write(' | ')                # and write a dividing ' | ' if there was a ','
                 else:
                     fp.write(i + ' ')              # else just write the data as usual
-            fp.write('\n')
+            # fp.write('\n')
         print('Table ' + tbl + ' created.')
     else:
         print('!Failed to create table' + tbl + ' because it already exists.')
@@ -65,7 +67,7 @@ def delete_tbl(tbl):
         print('!Failed to delete ' + tbl + ' because it does not exist.')
 
 # table update (file)
-#def update_tbl():
+# def update_tbl(tbl):
     
 
 # table query (file)
