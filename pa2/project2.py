@@ -4,7 +4,6 @@
 
 import os
 import shutil
-import re
 
 cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
 home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
@@ -92,6 +91,7 @@ def insert_info_tbl(data):
             for i in new_values:
                 fp.write(i)
                 fp.write(' | ')
+        return new_values
         print('1 new record inserted.')
     else:
         print('!Failed to insert data into table ' + data[2] + ' because it does not exist.')
@@ -129,6 +129,7 @@ def query_tbl(tbl):
 
 # main fct that handles user input
 def main():
+    table_elements = []
     while (True):
         user_in = input('')                                           # take in and parse user input
         user_in = user_in.replace(';', '')
@@ -150,7 +151,7 @@ def main():
         elif('DROP' in input_list and 'TABLE' in input_list):
             delete_tbl(input_list[2])
         elif('insert' in input_list):
-            insert_info_tbl(input_list)
+            table_elements.append(insert_info_tbl(input_list))
         elif('update' in input_list):
             update_tbl(input_list)
         elif('SELECT' in input_list):
