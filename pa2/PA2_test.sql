@@ -22,10 +22,10 @@ where name = 'Gizmo';
 
 select * from Product;
 
-delete from product 
+delete from Product 
 where name = 'Gizmo';
 
-delete from product 
+delete from Product 
 where price > 150;
 
 select * from Product;
