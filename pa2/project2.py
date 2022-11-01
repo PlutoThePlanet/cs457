@@ -121,7 +121,7 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
         elif(set_var == "price"):
             set_var = 2
         else:
-            print("!Failed to update table because " + set_var + " is not valid input.")
+            print("!Failed to update table because " + tbl + " does not exist.")
         if(where_var == "pid"):
             where_var = 0
         elif(where_var == "name"):
@@ -129,7 +129,7 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
         elif(where_var == "price"):
             where_var = 2
         else:
-            print("!Failed to update table because " + where_var + " is not valid input.")
+            print("!Failed to update table because " + tbl + " does not exist.")
 
         for row in tbl_elements:                           # update desired elements and count # modified
             if(row[where_var] == where_value):
@@ -159,16 +159,37 @@ def query_tbl(tbl):
     else:
         print('!Failed to query table ' + tbl + ' because it does not exist.')
 
+# select desired element(s)
+#def select_element()
+
+# delete desired element(s)
+def delete_element(tbl, operation, table_elements, where_var, where_value):
+    deletes = 0
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):                 # make sure the file exists
+        ################################################
+        for i in table_elements:
+            
+        ################################################
+    else:
+        print("!Failed to delete elements because " + tbl + " does not exist.")
+    
+    with open(tbl, 'w') as fp:                         # re-write file w/ updated info
+        fp.write('pid int | name varchar(20) | price float \n')
+        for row in tbl_elements:
+            for element in row:
+                fp.write(str(element) + " | ")
+            fp.write("\n")
+
 # main fct that handles user input
 def main():
     table_elements = []
     while (True):
-        #user_in = input('')                                          # take in and parse user input
-        #user_in = user_in.replace(';', '')
-        #input_list = user_in.split(' ')
-        input_list = parse_input()                                    # take in and parse user input
+        user_in = input('')                    # take in and parse user input
+        user_in = user_in.replace(';', '')
+        input_list = user_in.split(' ')
         
-        if ('--' in input_list):                                      # determine and run desired fct
+        if ('--' in input_list):               # determine and run desired fct
             pass
         elif('.exit' in input_list):
             print('All done.')
@@ -186,19 +207,23 @@ def main():
         elif('insert' in input_list):
             table_elements.append(insert_info_tbl(input_list))
         elif('update' in input_list): 
-            setWords = parse_input()      # prompts the user for first line of input and seperates into array
-            set_var = setWords[1]         # what element are we changing
-            set_value = setWords[3]       # what value of this are we changing to
-            whereWords = parse_input()    # prompts the user for second line of input and seperates into array
-            where_var = whereWords[1]     # what element are we looking at
-            where_value = whereWords[3]   # what value are we looking for
+            set_arr = parse_input()      # prompts the user for first line of input and seperates into array
+            set_var = set_arr[1]         # what element are we changing
+            set_value = set_arr[3]       # what value of this are we changing to
+            where_arr = parse_input()    # prompts the user for second line of input and seperates into array
+            where_var = where_arr[1]     # what element are we looking at
+            where_value = where_arr[3]   # what value are we looking for
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
         elif('select' and '*' in input_list):
             query_tbl(input_list[3])
         elif(('select' in input_list) and ('*' not in input_list)):
             select_element()
-        elif('select' in input_list):
-            delete_element()
+        elif('delete' in input_list):
+            where_arr = parseInput()      # prompts the user for first line of input and seperates into array
+            where_var = where_arr[1]      # what element are we looking at
+            operation = where_arr[2]      # what comparison do we make
+            where_value = where_arr[3]    # what value are we looking for
+            delete_element(input_list[2], operation, table_elements, where_var, where_value)
 
 # ensures main fct is called first
 if __name__ == "__main__":
