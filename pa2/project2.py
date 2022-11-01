@@ -166,17 +166,34 @@ def query_tbl(tbl):
 def delete_element(tbl, operation, table_elements, where_var, where_value):
     deletes = 0
     test_file = os.path.join(cwd, tbl)
-    if(os.path.exists(test_file)):                 # make sure the file exists
-        ################################################
-        for i in table_elements:
-            
-        ################################################
+    if(os.path.exists(test_file)):                                                 # make sure the file exists
+        if(where_var == "pid"):
+            where_var = 0
+        elif(where_var == "name"):
+            where_var = 1
+        elif(where_var == "price"):
+            where_var = 2
+        
+        for i, item in enumerate(table_elements):
+            if(operation == '<'):
+                if(float(table_elements[i][where_var]) < float(where_value)):
+                    table_elements.remove(table_elements[i])
+                    deletes += 1
+            elif(operation == '='):
+                if(str(table_elements[i][where_var]) == str(where_value)):
+                    table_elements.remove(table_elements[i])
+                    deletes += 1
+            elif(operation == '>'):
+                if(float(table_elements[i][where_var]) > float(where_value)):
+                    table_elements.remove(table_elements[i])
+                    deletes += 1
+        print(str(deletes) + ' records deleted.')
     else:
         print("!Failed to delete elements because " + tbl + " does not exist.")
     
-    with open(tbl, 'w') as fp:                         # re-write file w/ updated info
+    with open(tbl, 'w') as fp:                                                     # re-write file w/ updated info
         fp.write('pid int | name varchar(20) | price float \n')
-        for row in tbl_elements:
+        for row in table_elements:
             for element in row:
                 fp.write(str(element) + " | ")
             fp.write("\n")
@@ -219,7 +236,7 @@ def main():
         elif(('select' in input_list) and ('*' not in input_list)):
             select_element()
         elif('delete' in input_list):
-            where_arr = parseInput()      # prompts the user for first line of input and seperates into array
+            where_arr = parse_input()     # prompts the user for first line of input and seperates into array
             where_var = where_arr[1]      # what element are we looking at
             operation = where_arr[2]      # what comparison do we make
             where_value = where_arr[3]    # what value are we looking for
