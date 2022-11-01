@@ -4,6 +4,7 @@
 
 import os
 import shutil
+import re
 
 cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
 home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
@@ -23,6 +24,18 @@ def cleanValues(arr):
     res3 = res2.replace(' ', "")
     new_values = res3.split("'")
     return new_values
+
+#Parses input into words. Removes spaces, tabs, brackets, quotes, commas, semicolons, etc. #############################################################
+def parse_input():
+    userInput = input("")
+    words = re.split("[ \t,;']", userInput)
+    index = 0
+    while index < len(words):
+        if(words[index] == ""):
+            words.pop(index)
+        else:
+            index +=1
+    return words
 
 # database creation (new folder)
 def create_database(new_dir):
@@ -96,59 +109,48 @@ def insert_info_tbl(data):
     else:
         print('!Failed to insert data into table ' + data[2] + ' because it does not exist.')
 
-# update desired elements in table
-def update_tbl(table_elements, tbl):
-    updates = 0
-    set_var = 0
-    where_var = 0
-    where_value = 1 
-    
-    in_set = input('')					# take in two new lines of user input
-    arr_set = in_set.split(' ')			# and parse it
-    in_where = input('')
-    arr_where = in_where.split(' ')
-    
-    res1 = arr_set[3].replace("'", "")	# cleaning up input
-    res2 = res1.replace(';', "")
-    arr_set[3] = res2
-    res1 = arr_where[3].replace("'", "")
-    res2 = res1.replace(';', "")
-    arr_where[3] = res2
-    
-    print(arr_set) 	 # good
-    print(arr_where) # good
-    print('\n')
-    
-    if(arr_set[1] == "pid"):
-        set_var = 0
-    elif(arr_set[1] == "name"):
-        set_var = 1
-    elif(arr_set[1] == "price"):
-        set_var = 2
-    
-    if(arr_where[3] == "pid"):
-        where_var = 0
-    elif(arr_where[3] == "name"):
-        where_var = 1
-    elif(arr_where[3] == "price"):
-        where_var = 2
-    
-    print(where_var)
-    print(where_value)
-    print(set_var)
-    print(arr_set[3])
-    
-    for row in table_elements:									# make changes
-        if(row[where_var] == where_value):
-            row[set_var] = str(arr_set[3]).replace("'", "")
-            updates +=1
-    
-    with open(tbl, 'w') as fp:									# write changes
-        fp.write('pid int | name varchar(20) | price float \n')
-        for row in table_elements:
+# update desired elements in table ###########################################################################################
+def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
+    filePath = os.path.join(os.getcwd(), tbl)
+    if(not os.path.exists(filePath)):
+        print("!Failed to update table " + tbl + " because it does not exist.")
+    else:
+        if(set_var == "pid"):
+            set_var = 0
+        elif(set_var == "name"):
+            set_var = 1
+        elif(set_var == "price"):
+            set_var = 2
+        else:
+            print("!Failed to update table because " + set_var + " does not exist.")
+        
+        if(where_var == "pid"):
+            where_var = 0
+        elif(where_var == "name"):
+            where_var = 1
+        elif(where_var == "price"):
+            where_var = 2
+        else:
+            print("!Failed to update table because " + where_var + " does not exist.")
+        numUpdated = 0
+        
+        for row in tbl_elements:
+            if(row[where_var] == where_value):
+                row[set_var] = set_value
+                numUpdated +=1
+            
+        if(numUpdated == 1):
+            print("1 record modified.")
+        else:
+            print(str(numUpdated) + " records modified.")
+            
+        f = open(tbl, "w")
+        for row in tbl_elements:
             for element in row:
-                fp.write(str(element) + " | ")
-            fp.write("\n")
+                f.write(str(element) + " | ")
+            f.write("\n")
+        f.close()
+        ####################################################################################
     
 # table query (file)
 def query_tbl(tbl):
@@ -184,8 +186,17 @@ def main():
             delete_tbl(input_list[2])
         elif('insert' in input_list):
             table_elements.append(insert_info_tbl(input_list))
-        elif('update' in input_list):
-            update_tbl(table_elements, input_list[1])
+        ###########################################################################
+        elif('update' in input_list): 
+            setWords = parse_input()      # prompts the user for first line of input and seperates into array
+            set_var = setWords[1]         # what element are we changing
+            set_value = setWords[3]       # what value of this are we changing to
+            whereWords = parse_input()    # prompts the user for second line of input and seperates into array
+            where_var = whereWords[1]     # what element are we looking at
+            where_value = whereWords[3]   # what value are we looking for
+            updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
+            # update_tbl(table_elements, input_list[1])
+        ###########################################################################
         elif('select' and '*' in input_list): # print the entire table
             query_tbl(input_list[3])
 
