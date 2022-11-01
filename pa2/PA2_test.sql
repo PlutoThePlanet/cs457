@@ -12,7 +12,7 @@ insert into Product values(5,	'SuperGizmo', 	49.99);
 
 select * from Product;
 
-update Product 
+update Product;
 set name = 'Gizmo';
 where name = 'SuperGizmo';
 
@@ -68,3 +68,16 @@ where pid != 2;
 -- name varchar(20)|price float
 -- SingleTouch|149.99
 -- All done.
+
+
+
+
+
+
+
+
+
+
+
+
+

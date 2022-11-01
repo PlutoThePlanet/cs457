@@ -142,6 +142,7 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
             print(str(updates) + " records modified.")
             
         with open(tbl, 'w') as fp:                         # re-write file w/ updated info
+            fp.write('pid int | name varchar(20) | price float \n')
             for row in tbl_elements:
                 for element in row:
                     fp.write(str(element) + " | ")
@@ -191,7 +192,7 @@ def main():
             where_var = whereWords[1]     # what element are we looking at
             where_value = whereWords[3]   # what value are we looking for
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
-        elif('select' and '*' in input_list): # print the entire table
+        elif('select' and '*' in input_list):
             query_tbl(input_list[3])
 
 # ensures main fct is called first
