@@ -25,7 +25,7 @@ def cleanValues(arr):
     new_values = res3.split("'")
     return new_values
 
-# seperates input into array of "words", removing any extra chars in the process (for update)
+# seperates input into array of "words", removing any extra chars in the process (for update fct)
 def parse_input():
     usr_in = input("")                          # get input
     words = re.split("[ \t,;']", usr_in)        # seperate on special chars
@@ -109,21 +109,19 @@ def insert_info_tbl(data):
     else:
         print('!Failed to insert data into table ' + data[2] + ' because it does not exist.')
 
-# update desired elements in table ###########################################################################################
+# update desired elements in table
 def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
-    filePath = os.path.join(os.getcwd(), tbl)
-    if(not os.path.exists(filePath)):
-        print("!Failed to update table " + tbl + " because it does not exist.")
-    else:
-        if(set_var == "pid"):
+    updates = 0
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):                 # make sure the file exists
+        if(set_var == "pid"):                      # set all necessary vaiables 
             set_var = 0
         elif(set_var == "name"):
             set_var = 1
         elif(set_var == "price"):
             set_var = 2
         else:
-            print("!Failed to update table because " + set_var + " does not exist.")
-        
+            print("!Failed to update table because " + set_var + " is not valid input.")
         if(where_var == "pid"):
             where_var = 0
         elif(where_var == "name"):
@@ -131,26 +129,25 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
         elif(where_var == "price"):
             where_var = 2
         else:
-            print("!Failed to update table because " + where_var + " does not exist.")
-        numUpdated = 0
-        
-        for row in tbl_elements:
+            print("!Failed to update table because " + where_var + " is not valid input.")
+
+        for row in tbl_elements:                           # update desired elements and count # modified
             if(row[where_var] == where_value):
                 row[set_var] = set_value
-                numUpdated +=1
-            
-        if(numUpdated == 1):
+                updates +=1
+                
+        if(updates == 1):                                  # notify user
             print("1 record modified.")
         else:
-            print(str(numUpdated) + " records modified.")
+            print(str(updates) + " records modified.")
             
-        f = open(tbl, "w")
-        for row in tbl_elements:
-            for element in row:
-                f.write(str(element) + " | ")
-            f.write("\n")
-        f.close()
-        ####################################################################################
+        with open(tbl, 'w') as fp:                         # re-write file w/ updated info
+            for row in tbl_elements:
+                for element in row:
+                    fp.write(str(element) + " | ")
+                fp.write("\n")
+    else:
+        print('!Failed to insert data into table ' + tbl + ' because it does not exist.')
     
 # table query (file)
 def query_tbl(tbl):
@@ -171,7 +168,7 @@ def main():
         
         if ('--' in input_list):                                      # determine and run desired fct
             pass
-        elif('.EXIT' in input_list):
+        elif('.exit' in input_list):
             print('All done.')
             exit()
         elif('CREATE' in input_list and 'DATABASE' in input_list):
@@ -186,7 +183,6 @@ def main():
             delete_tbl(input_list[2])
         elif('insert' in input_list):
             table_elements.append(insert_info_tbl(input_list))
-        ###########################################################################
         elif('update' in input_list): 
             setWords = parse_input()      # prompts the user for first line of input and seperates into array
             set_var = setWords[1]         # what element are we changing
@@ -195,8 +191,6 @@ def main():
             where_var = whereWords[1]     # what element are we looking at
             where_value = whereWords[3]   # what value are we looking for
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
-            # update_tbl(table_elements, input_list[1])
-        ###########################################################################
         elif('select' and '*' in input_list): # print the entire table
             query_tbl(input_list[3])
 
