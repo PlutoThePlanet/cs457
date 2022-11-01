@@ -25,14 +25,14 @@ def cleanValues(arr):
     new_values = res3.split("'")
     return new_values
 
-#Parses input into words. Removes spaces, tabs, brackets, quotes, commas, semicolons, etc. #############################################################
+# seperates input into array of "words", removing any extra chars in the process (for update)
 def parse_input():
-    userInput = input("")
-    words = re.split("[ \t,;']", userInput)
+    usr_in = input("")                          # get input
+    words = re.split("[ \t,;']", usr_in)        # seperate on special chars
     index = 0
     while index < len(words):
-        if(words[index] == ""):
-            words.pop(index)
+        if(words[index] == ""):                 # if the index is empty b/c of the char seperation
+            words.pop(index)                    # remove from array
         else:
             index +=1
     return words
