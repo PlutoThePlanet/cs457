@@ -163,9 +163,10 @@ def query_tbl(tbl):
 def main():
     table_elements = []
     while (True):
-        user_in = input('')                                           # take in and parse user input
-        user_in = user_in.replace(';', '')
-        input_list = user_in.split(' ')
+        #user_in = input('')                                          # take in and parse user input
+        #user_in = user_in.replace(';', '')
+        #input_list = user_in.split(' ')
+        input_list = parse_input()                                    # take in and parse user input
         
         if ('--' in input_list):                                      # determine and run desired fct
             pass
@@ -194,6 +195,10 @@ def main():
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
         elif('select' and '*' in input_list):
             query_tbl(input_list[3])
+        elif(('select' in input_list) and ('*' not in input_list)):
+            select_element()
+        elif('select' in input_list):
+            delete_element()
 
 # ensures main fct is called first
 if __name__ == "__main__":
