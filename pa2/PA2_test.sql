@@ -13,7 +13,7 @@ insert into Product values(5,	'SuperGizmo', 	49.99);
 select * from Product;
 
 update Product 
-set name = 'Gizmo' 
+set name = 'Gizmo';
 where name = 'SuperGizmo';
 
 update Product 
@@ -31,7 +31,7 @@ where price > 150;
 select * from Product;
 
 select name, price 
-from product 
+from Product 
 where pid != 2;
 
 .exit

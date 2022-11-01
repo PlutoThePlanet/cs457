@@ -83,41 +83,73 @@ def delete_tbl(tbl):
 # insert new data into file
 def insert_info_tbl(data):
     values = data[3:]
-    new_values = cleanValues(values)	# preps data to be inserted
-    test_file = os.path.join(cwd, data[2]) # print data to file
+    new_values = cleanValues(values)			# preps data to be inserted
+    test_file = os.path.join(cwd, data[2])  	# print data to file
     if(os.path.exists(test_file)):
         with open(data[2], 'a') as fp:
             fp.write('\n')
             for i in new_values:
                 fp.write(i)
                 fp.write(' | ')
-        return new_values
         print('1 new record inserted.')
+        return new_values
     else:
         print('!Failed to insert data into table ' + data[2] + ' because it does not exist.')
-    
-    '''
-    elif('update' in data):
-        updates = 0;
-        # take in two new lines of user input
-        
-    
-    
-    if name then
-        using appropriate index,
-        iterate through and change all instances
-        updates += 1
-    if price then
-        using appropriate index,
-        iterate through and change all instances
-        updates += 1
-    
-    if(updates != 1):
-        print(updates + ' records modified.')
-    else:
-        print(updates + ' record modified.')
-    '''
 
+# update desired elements in table
+def update_tbl(table_elements, tbl):
+    updates = 0
+    set_var = 0
+    where_var = 0
+    where_value = 1 
+    
+    in_set = input('')					# take in two new lines of user input
+    arr_set = in_set.split(' ')			# and parse it
+    in_where = input('')
+    arr_where = in_where.split(' ')
+    
+    res1 = arr_set[3].replace("'", "")	# cleaning up input
+    res2 = res1.replace(';', "")
+    arr_set[3] = res2
+    res1 = arr_where[3].replace("'", "")
+    res2 = res1.replace(';', "")
+    arr_where[3] = res2
+    
+    print(arr_set) 	 # good
+    print(arr_where) # good
+    print('\n')
+    
+    if(arr_set[1] == "pid"):
+        set_var = 0
+    elif(arr_set[1] == "name"):
+        set_var = 1
+    elif(arr_set[1] == "price"):
+        set_var = 2
+    
+    if(arr_where[3] == "pid"):
+        where_var = 0
+    elif(arr_where[3] == "name"):
+        where_var = 1
+    elif(arr_where[3] == "price"):
+        where_var = 2
+    
+    print(where_var)
+    print(where_value)
+    print(set_var)
+    print(arr_set[3])
+    
+    for row in table_elements:									# make changes
+        if(row[where_var] == where_value):
+            row[set_var] = str(arr_set[3]).replace("'", "")
+            updates +=1
+    
+    with open(tbl, 'w') as fp:									# write changes
+        fp.write('pid int | name varchar(20) | price float \n')
+        for row in table_elements:
+            for element in row:
+                fp.write(str(element) + " | ")
+            fp.write("\n")
+    
 # table query (file)
 def query_tbl(tbl):
     test_file = os.path.join(cwd, tbl)
@@ -153,8 +185,8 @@ def main():
         elif('insert' in input_list):
             table_elements.append(insert_info_tbl(input_list))
         elif('update' in input_list):
-            update_tbl(input_list)
-        elif('SELECT' in input_list):
+            update_tbl(table_elements, input_list[1])
+        elif('select' and '*' in input_list): # print the entire table
             query_tbl(input_list[3])
 
 # ensures main fct is called first
