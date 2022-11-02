@@ -25,7 +25,7 @@ def cleanValues(arr):
     new_values = res3.split("'")
     return new_values
 
-# seperates input into array of "words", removing any extra chars in the process (for update fct)
+# seperates input into array of "words", removing any extra chars in the process (for update, delete fct - where extra usr input is needed)
 def parse_input():
     usr_in = input("")                          # get input
     words = re.split("[ \t,;']", usr_in)        # seperate on special chars
@@ -69,7 +69,7 @@ def use_database(db):
 # table creation (new file with data)
 def create_tbl(tbl, data):
     clean_data = cleanTableData(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
-    new_data = clean_data.split(', ')       # return str back to an array
+    new_data = clean_data.split(', ')            # return str back to an array
     
     test_file = os.path.join(cwd, tbl)
     if(not os.path.exists(test_file)):             # make sure the file doesn't already exist 
@@ -160,8 +160,35 @@ def query_tbl(tbl):
         print('!Failed to query table ' + tbl + ' because it does not exist.')
 
 # select desired element(s)
-#def select_element()
-
+def select_element(tbl, table_elements, select_list, where_var, where_value, operation):
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):                   # make sure the file exists
+        if(where_var == "pid"):                      # update where_var index
+            where_var = 0
+        elif(where_var == "name"):
+            where_var = 1
+        elif(where_var == "price"):
+            where_var = 2
+        for i, item in enumerate(select_list):       # update elements to print
+            if(select_list[i] == "pid"):
+                select_list[i] = 0
+                print('pid int | ', end = '')
+            elif(select_list[i] == "name"):
+                select_list[i] = 1
+                print('name varchar(20) | ', end = '')
+            elif(select_list[i] == "price"):
+                select_list[i] = 2
+                print('price float', end = '')
+        print('\r')
+        for i, item in enumerate(table_elements):
+            if(operation == '!='):
+                if(float(table_elements[i][where_var]) != float(where_value)):
+                    for j in select_list:                                      # then iterate through what elements we want printed
+                        print(table_elements[i][j] + ' | ', end = '')
+                    print('\r')
+    else:
+        print('!Failed to select elements from ' + tbl + ' because it does not exist.')
+        
 # delete desired element(s)
 def delete_element(tbl, operation, table_elements, where_var, where_value):
     deletes = 0
@@ -187,10 +214,14 @@ def delete_element(tbl, operation, table_elements, where_var, where_value):
                 if(float(table_elements[i][where_var]) > float(where_value)):
                     table_elements.remove(table_elements[i])
                     deletes += 1
-        print(str(deletes) + ' records deleted.')
     else:
         print("!Failed to delete elements because " + tbl + " does not exist.")
-    
+        
+    if(deletes == 1):                                                              # notify user
+            print("1 record deleted.")
+    else:
+        print(str(deletes) + " records deleted.")
+            
     with open(tbl, 'w') as fp:                                                     # re-write file w/ updated info
         fp.write('pid int | name varchar(20) | price float \n')
         for row in table_elements:
@@ -233,8 +264,17 @@ def main():
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
         elif('select' and '*' in input_list):
             query_tbl(input_list[3])
-        elif(('select' in input_list) and ('*' not in input_list)):
-            select_element()
+        elif(('select' in input_list) and ('*' not in input_list)):#######################################################
+            select_list = []
+            select_list.append(input_list[1].replace(',', ''))
+            select_list.append(input_list[2])                       # get elements to print
+            tbl_arr = parse_input()                                 # get table to use
+            tbl = tbl_arr[1]
+            where_arr = parse_input()                               # find what conditions to use when searching
+            where_var = where_arr[1]
+            operator = where_arr[2]
+            where_value = where_arr[3]
+            select_element(tbl, table_elements, select_list, where_var, where_value, operator)
         elif('delete' in input_list):
             where_arr = parse_input()     # prompts the user for first line of input and seperates into array
             where_var = where_arr[1]      # what element are we looking at

@@ -16,13 +16,13 @@ update Product;
 set name = 'Gizmo';
 where name = 'SuperGizmo';
 
-update Product 
+update Product;
 set price = 14.99 
 where name = 'Gizmo';
 
 select * from Product;
 
-delete from Product 
+delete from Product;
 where name = 'Gizmo';
 
 delete from Product 
