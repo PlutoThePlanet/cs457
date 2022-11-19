@@ -1,6 +1,6 @@
 # Paige Mortensen
-# CS 457 PA 2
-# 10/31/22
+# CS 457 PA 3
+# 11/18/22
 
 import os
 import shutil
@@ -37,6 +37,22 @@ def parse_input():
             index +=1
     return words
 
+# seperates input to create a new table into a usable array ######################################
+def parse_new_table_input(usr_in):
+    words = re.split("[ \t ;']", usr_in)    # seperate on special chars
+    index = 0
+    while index < len(words):
+        if(words[index] == ""):             # if the index is empty b/c of the char seperation
+            words.pop(index)                # remove from array
+        else:
+            index +=1
+    extra_words = words[2].split("(")       # extract the title of the table from extra data
+    words.pop(2)                            # delete the old data
+    words.insert(2, extra_words[0])         # add fixed data back to array
+    words.insert(3, extra_words[1])
+    words[6] = (words[6])[0:-1]             # remove the extra ) from the last element
+    return words
+
 # database creation (new folder)
 def create_database(new_dir):
     try:
@@ -68,13 +84,13 @@ def use_database(db):
         
 # table creation (new file with data)
 def create_tbl(tbl, data):
-    clean_data = cleanTableData(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
-    new_data = clean_data.split(', ')            # return str back to an array
+    # clean_data = cleanTableData(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
+    # new_data = clean_data.split(', ')            # return str back to an array
     
     test_file = os.path.join(cwd, tbl)
     if(not os.path.exists(test_file)):             # make sure the file doesn't already exist 
         with open(tbl, 'w') as fp:
-            for i in new_data:                     # iterate through elements
+            for i in data:                     # iterate through elements
                 if(i.__contains__(',')):
                     fp.write(i[0:-1])              # write the data but ignore the , at the end of the string
                     fp.write(' | ')                # and write a dividing ' | ' if there was a ','
@@ -249,7 +265,8 @@ def main():
         elif('USE' in input_list):
             use_database(input_list[1])
         elif('create' in input_list and 'table' in input_list):
-            create_tbl(input_list[2], input_list[3:])
+            table_words = parse_new_table_input(user_in) # parses the input fresh for input
+            create_tbl(table_words[2], table_words[3:])
         elif('drop' in input_list and 'table' in input_list):
             delete_tbl(input_list[2])
         elif('insert' in input_list):
