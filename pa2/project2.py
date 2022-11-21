@@ -264,7 +264,7 @@ def main():
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
         elif('select' and '*' in input_list):
             query_tbl(input_list[3])
-        elif(('select' in input_list) and ('*' not in input_list)):#######################################################
+        elif(('select' in input_list) and ('*' not in input_list)):
             select_list = []
             select_list.append(input_list[1].replace(',', ''))
             select_list.append(input_list[2])                       # get elements to print
