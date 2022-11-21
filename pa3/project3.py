@@ -1,6 +1,6 @@
 # Paige Mortensen
 # CS 457 PA 3
-# 11/18/22
+# 11/20/22
 
 import os
 import shutil
@@ -8,12 +8,6 @@ import re
 
 cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
 home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
-
-# cleans up the extra '(' and ')' when taking in table data
-def cleanTableData(arr):
-    new_string = ', '.join(str(x) for x in arr)   # joins all array elements into one string
-    clean_string = new_string[1:-1]               # erase beginning and end parenthesis
-    return clean_string
 
 # cleans up the input values when inserting a new record
 def cleanValues(values):
@@ -34,7 +28,7 @@ def parse_input():
             index +=1
     return words
 
-# seperates input to create a new table into a usable array ######################################
+# seperates input to create a new table into a usable array
 def parse_new_table_input(usr_in):
     words = re.split("[ \t ;']", usr_in)    # seperate on special chars
     index = 0
