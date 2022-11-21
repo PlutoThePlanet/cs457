@@ -9,6 +9,31 @@ import re
 cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
 home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
 
+# reads stored data from file into useable array
+def file_to_array(tbl):
+    data_arr = []
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):          # make sure the file exists
+        with open(tbl, 'r') as file:
+            for line in file:
+                line = line.strip() 		# remove \n char
+                data = line.split(" ")
+                data_arr.append(data)		# create 2d array
+            for i in data_arr:
+                for j in i:
+                    if(j == "|"):
+                        i.remove(j)
+        temp_str_1 = (data_arr[0][0] + " " + data_arr[0][1])
+        temp_str_2 = (data_arr[0][2] + " " + data_arr[0][3])
+        temp_arr = []
+        temp_arr.append(temp_str_1)
+        temp_arr.append(temp_str_2)
+        data_arr.pop(0)
+        data_arr.insert(0, temp_arr)
+        return data_arr
+    else:
+        print('!The table(s) you are looking for does not exist.')
+
 # cleans up the input values when inserting a new record
 def cleanValues(values):
     val1 = values[9:-3] 			# remove extra chars and ()
@@ -153,14 +178,15 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
     else:
         print('!Failed to insert data into table ' + tbl + ' because it does not exist.')
     
-# table query (file)
-def query_tbl(tbl):
-    test_file = os.path.join(cwd, tbl)
-    if(os.path.exists(test_file)):
-        with open(tbl, 'r') as fp:
-            print(fp.read())               # print entire entry
-    else:
-        print('!Failed to query table ' + tbl + ' because it does not exist.')
+# table query of joined elements
+def query_tbl():
+    tables = parse_input()			# collect additional input form
+    comparison = parse_input()
+    
+    # from Employee E, Sales S 
+    # where E.id = S.employeeID
+    # regular, default (inner) join
+    
 
 # select desired element(s)
 def select_element(tbl, table_elements, select_list, where_var, where_value, operation):
@@ -266,8 +292,8 @@ def main():
             where_var = where_arr[1]     # what element are we looking at
             where_value = where_arr[3]   # what value are we looking for
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
-        elif('select' and '*' in input_list):
-            query_tbl(input_list[3])
+        elif('select' and '*' in input_list): #############################################################################################
+            query_tbl()
         elif(('select' in input_list) and ('*' not in input_list)):
             select_list = []
             select_list.append(input_list[1].replace(',', ''))
@@ -285,7 +311,9 @@ def main():
             operation = where_arr[2]      # what comparison do we make
             where_value = where_arr[3]    # what value are we looking for
             delete_element(input_list[2], operation, table_elements, where_var, where_value)
-
+    
+    print(table_elements)
+    
 # ensures main fct is called first
 if __name__ == "__main__":
     main()
