@@ -178,15 +178,33 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
     else:
         print('!Failed to insert data into table ' + tbl + ' because it does not exist.')
     
-# table query of joined elements
+# table query of joined elements  ####################################################################################################
 def query_tbl():
-    tables = parse_input()			# collect additional input form
+    tables = parse_input()			# collect additional input from user
     comparison = parse_input()
+    length = len(tables)
+    tbl_name_1 = []
+    tbl_name_2 = []
+    tbl_data_1 = []
+    tbl_data_2 = []
     
-    # from Employee E, Sales S 
-    # where E.id = S.employeeID
-    # regular, default (inner) join
-    
+    if(length == 5): 												# regular, default (inner) join
+        tbl_name_1 = tables[1]
+        tbl_name_2 = tables[3]
+        tbl_data_1 = file_to_array(tbl_name_1)
+        tbl_data_2 = file_to_array(tbl_name_2)
+        
+    elif('inner' in tables):
+        tbl_name_1 = tables[1]
+        tbl_name_2 = tables[5]
+        tbl_data_1 = file_to_array(tbl_name_1)
+        tbl_data_2 = file_to_array(tbl_name_2)
+        
+    elif('left' in tables and 'outer' in tables):
+        tbl_name_1 = tables[1]
+        tbl_name_2 = tables[6]
+        tbl_data_1 = file_to_array(tbl_name_1)
+        tbl_data_2 = file_to_array(tbl_name_2)
 
 # select desired element(s)
 def select_element(tbl, table_elements, select_list, where_var, where_value, operation):
@@ -222,7 +240,7 @@ def select_element(tbl, table_elements, select_list, where_var, where_value, ope
 def delete_element(tbl, operation, table_elements, where_var, where_value):
     deletes = 0
     test_file = os.path.join(cwd, tbl)
-    if(os.path.exists(test_file)):                                                 # make sure the file exists
+    if(os.path.exists(test_file)):                                             # make sure the file exists
         if(where_var == "pid"):
             where_var = 0
         elif(where_var == "name"):
@@ -311,8 +329,6 @@ def main():
             operation = where_arr[2]      # what comparison do we make
             where_value = where_arr[3]    # what value are we looking for
             delete_element(input_list[2], operation, table_elements, where_var, where_value)
-    
-    print(table_elements)
     
 # ensures main fct is called first
 if __name__ == "__main__":
