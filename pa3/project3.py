@@ -16,14 +16,11 @@ def cleanTableData(arr):
     return clean_string
 
 # cleans up the input values when inserting a new record
-def cleanValues(arr):
-    new_string = ', '.join(str(x) for x in arr)   # joins all array elements into one string
-    clean_string = new_string[7:-1]               # erase beginning info and end parenthesis
-    res1 = clean_string.replace(',', "")		  # Deleting all occurrences of character(s)
-    res2 = res1.replace('\t', "")
-    res3 = res2.replace(' ', "")
-    new_values = res3.split("'")
-    return new_values
+def cleanValues(values):
+    val1 = values[9:-3] 			# remove extra chars and ()
+    val2 = val1.replace("'", "") 	# remove quotes if any
+    final_vals = val2.split(',') 	# split data into an array on commas
+    return final_vals
 
 # seperates input into array of "words", removing any extra chars in the process (for update, delete fct - where extra usr input is needed)
 def parse_input():
@@ -84,9 +81,6 @@ def use_database(db):
         
 # table creation (new file with data)
 def create_tbl(tbl, data):
-    # clean_data = cleanTableData(data)            # returns str of "cleaned" data w/o beginning and end parenthesis
-    # new_data = clean_data.split(', ')            # return str back to an array
-    
     test_file = os.path.join(cwd, tbl)
     if(not os.path.exists(test_file)):             # make sure the file doesn't already exist 
         with open(tbl, 'w') as fp:
@@ -96,7 +90,6 @@ def create_tbl(tbl, data):
                     fp.write(' | ')                # and write a dividing ' | ' if there was a ','
                 else:
                     fp.write(i + ' ')              # else just write the data as usual
-            # fp.write('\n')
         print('Table ' + tbl + ' created.')
     else:
         print('!Failed to create table' + tbl + ' because it already exists.')
@@ -111,7 +104,7 @@ def delete_tbl(tbl):
 
 # insert new data into file
 def insert_info_tbl(data):
-    values = data[3:]
+    values = str(data[3:])
     new_values = cleanValues(values)			# preps data to be inserted
     test_file = os.path.join(cwd, data[2])  	# print data to file
     if(os.path.exists(test_file)):
@@ -302,4 +295,3 @@ def main():
 # ensures main fct is called first
 if __name__ == "__main__":
     main()
-
