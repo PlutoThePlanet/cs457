@@ -177,8 +177,8 @@ def updateTable(tbl, tbl_elements, set_var, set_value, where_var, where_value):
                 fp.write("\n")
     else:
         print('!Failed to insert data into table ' + tbl + ' because it does not exist.')
-    
-# table query of joined elements  ####################################################################################################
+
+# table query of joined elements
 def query_tbl():
     tables = parse_input()			# collect additional input from user
     comparison = parse_input()
@@ -188,24 +188,73 @@ def query_tbl():
     tbl_data_1 = []
     tbl_data_2 = []
     
-    if(length == 5): 												# regular, default (inner) join
-        tbl_name_1 = tables[1]
+    if(length == 5): 									# regular, default (inner) join
+        tbl_name_1 = tables[1]									# data setup
         tbl_name_2 = tables[3]
         tbl_data_1 = file_to_array(tbl_name_1)
         tbl_data_2 = file_to_array(tbl_name_2)
-        
-    elif('inner' in tables):
-        tbl_name_1 = tables[1]
+        tbl1_len = len(tbl_data_1)
+        tbl2_len = len(tbl_data_2)
+        header1 = ' | '.join(tbl_data_1[0])						# print headers
+        print(header1 + ' | ', end = '')
+        header2 = ' | '.join(tbl_data_2[0])
+        print(header2)
+        for i in tbl_data_1:									# loop through and check data
+            for j in tbl_data_2:
+                if(i[0] == j[0]):								# compare IDs and print
+                    data1 = ' | '.join(i)
+                    print(data1 + ' | ', end = '')
+                    data2 = ' | '.join(j)
+                    print(data2)
+                    
+    elif('inner' in tables):							# same as above
+        tbl_name_1 = tables[1]									# data setup
         tbl_name_2 = tables[5]
         tbl_data_1 = file_to_array(tbl_name_1)
         tbl_data_2 = file_to_array(tbl_name_2)
+        tbl1_len = len(tbl_data_1)
+        tbl2_len = len(tbl_data_2)
+        header1 = ' | '.join(tbl_data_1[0])						# print headers
+        print(header1 + ' | ', end = '')
+        header2 = ' | '.join(tbl_data_2[0])
+        print(header2)
+        for i in tbl_data_1:									# loop through and check data
+            for j in tbl_data_2:
+                if(i[0] == j[0]):								# compare IDs and print
+                    data1 = ' | '.join(i)
+                    print(data1 + ' | ', end = '')
+                    data2 = ' | '.join(j)
+                    print(data2)
         
-    elif('left' in tables and 'outer' in tables):
-        tbl_name_1 = tables[1]
+    elif('left' in tables and 'outer' in tables):		# left outer join
+        tbl_name_1 = tables[1]									# data setup
         tbl_name_2 = tables[6]
         tbl_data_1 = file_to_array(tbl_name_1)
         tbl_data_2 = file_to_array(tbl_name_2)
+        tbl1_len = len(tbl_data_1)
+        tbl2_len = len(tbl_data_2)
 
+        header1 = ' | '.join(tbl_data_1[0])						# print headers
+        print(header1 + ' | ', end = '')
+        header2 = ' | '.join(tbl_data_2[0])
+        print(header2)
+        
+        tbl_data_1.pop(0)										# remove headers form data to print / compare
+        tbl_data_2.pop(0)
+        
+        for i in tbl_data_1:
+            match = 0
+            for j in tbl_data_2:
+                if(i[0] == j[0]):								# if there is a match, print the data pair
+                    data1 = ' | '.join(i)
+                    print(data1 + ' | ', end = '')
+                    data2 = ' | '.join(j)
+                    print(data2)
+                    match += 1
+            if(match == 0):										# else if no matches are ever found, just print the first data pair
+                data1 = ' | '.join(i)
+                print(data1 + ' | ')
+                    
 # select desired element(s)
 def select_element(tbl, table_elements, select_list, where_var, where_value, operation):
     test_file = os.path.join(cwd, tbl)
@@ -310,7 +359,7 @@ def main():
             where_var = where_arr[1]     # what element are we looking at
             where_value = where_arr[3]   # what value are we looking for
             updateTable(input_list[1], table_elements, set_var, set_value, where_var, where_value)
-        elif('select' and '*' in input_list): #############################################################################################
+        elif('select' and '*' in input_list):
             query_tbl()
         elif(('select' in input_list) and ('*' not in input_list)):
             select_list = []

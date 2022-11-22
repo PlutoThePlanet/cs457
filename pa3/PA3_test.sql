@@ -43,17 +43,21 @@ on E.id = S.employeeID;
 -- 1 new record inserted.
 -- 1 new record inserted.
 -- 1 new record inserted.
+
 -- id int|name varchar(10)|employeeID int|productID int
 -- 1|Joe|1|344
 -- 1|Joe|1|355
 -- 2|Jack|2|544
+
 -- id int|name varchar(10)|employeeID int|productID int
 -- 1|Joe|1|344
 -- 1|Joe|1|355
 -- 2|Jack|2|544
+
 -- id int|name varchar(10)|employeeID int|productID int
 -- 1|Joe|1|344
 -- 1|Joe|1|355
 -- 2|Jack|2|544
 -- 3|Gill||
+
 -- All done.
