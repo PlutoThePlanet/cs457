@@ -60,7 +60,7 @@ In this assignment, we were required to write a program that allows a database u
 **Input**: the database we want to work in<br />
 **Use**: as long as it exists, this function lets us work within a desired database for the foreseeable future<br />
 **Implementation**: take in the name of the database that you want to be working in. Make sure your system is viewing your original "home" directory (where all databases are made) and try to change your working directory to the desired database. If an error is thrown because the desired database does not exist, inform the user. If the database does exist, all future action will be performed within this database (until the user decides to switch to another database or back to the "home" directory.
-<br />
+<br /> 
 <br />
 **Function**: `delete_database(dir)`<br />
 **Input**: name of database to be deleted<br />
