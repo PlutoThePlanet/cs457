@@ -38,6 +38,7 @@ select * from Flights;
 -- 1 new record inserted.
 -- Transaction starts.
 -- 1 record modified.
+
 -- Transaction committed.
 -- seat int|status int
 -- 22|1
@@ -55,6 +56,7 @@ select * from Flights;
 -- seat int|status int
 -- 22|0
 -- 23|1
+
 -- seat int|status int
 -- 22|1
 -- 23|1
