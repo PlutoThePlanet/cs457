@@ -312,6 +312,10 @@ def delete_element(tbl, operation, table_elements, where_var, where_value):
                 fp.write(str(element) + " | ")
             fp.write("\n")
 
+# handles completing transaction(s) within file
+def transaction(usr_in, data):
+    print('here')
+
 # main fct that handles user input
 def main():
     table_elements = []
@@ -331,11 +335,8 @@ def main():
             delete_database(input_list[2])
         elif('USE' in input_list):
             use_database(input_list[1])
-        elif('create' in input_list and 'table' in input_list): ####################################################################
-            # print(input_list)
+        elif('create' in input_list and 'table' in input_list):
             create_tbl(input_list[2], input_list[3:])
-            # table_words = parse_new_table_input(user_in)
-            # create_tbl(table_words[2], table_words[3:])
         elif('drop' in input_list and 'table' in input_list):
             delete_tbl(input_list[2])
         elif('insert' in input_list):
@@ -367,6 +368,11 @@ def main():
             operation = where_arr[2]      # what comparison do we make
             where_value = where_arr[3]    # what value are we looking for
             delete_element(input_list[2], operation, table_elements, where_var, where_value)
+        elif('transaction' in input_list):
+            transaction_in = parse_input()
+            transaction(transaction_in, table_elements)
+            # update table_elements with their new values
+            
     
 # ensures main fct is called first
 if __name__ == "__main__":
