@@ -80,12 +80,10 @@ In this assignment, we were required to write a program that allows a database u
 **Implementation**: visually updates data by printing to file.
 <br />
 <br />
-Note: this project does not contain all past capabilities. It has been paired down for easier reading / comprehension of new functions
-
-
-
-
 **Function**: `main()`<br />
 **Input**: n/a<br />
 **Use**: user input is accepted either line-by-line or via a pre-written file. The input is then parsed and desired functionality is determined and carried out<br />
 **Implementation**: continue to prompt for user input until the user decides to exit (via `while` loop). Read in user input - while removing the `;` - and section input by spaces into an array (one word for each index). Perform various tests on said input to dertermine which function should be run (via `elif` statements). Before calling functions like `updateTable`, `select_element`, or `delete_element`, call upon `parse_input` to get extra user input and assign data to variables before passing to the necessary functions.
+<br />
+<br />
+Note: this project does not contain all past capabilities. It has been paired down for easier reading / comprehension of new functions
