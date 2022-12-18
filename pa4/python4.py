@@ -6,8 +6,10 @@ import os
 import shutil
 import re
 
-cwd = os.getcwd()         # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
-home_dir = os.getcwd()    # always able to refer back to original "home" directory (used for switching between databases)
+cwd = os.getcwd()           # keep track of which directory being used in system (when switched, so you can stay there for mult. actions)
+home_dir = os.getcwd()      # always able to refer back to original "home" directory (used for switching between databases)
+# lockFlag = 0              # file locked = 1, unlocked = 0
+fileChangeFlag = 0          # file has been modified and can be comitted (somethng changed = 1, unchanged = 0)
 
 # reads stored data from file into useable array
 def file_to_array(tbl):
@@ -90,7 +92,8 @@ def create_tbl(tbl, data):
     test_file = os.path.join(cwd, tbl)
     if(not os.path.exists(test_file)):             # make sure the file doesn't already exist 
         with open(tbl, 'w') as fp:
-            for i in cleanData:                     # iterate through elements
+            fp.write('lockFlag = 0\n')             # the file begins as unlocked
+            for i in cleanData:                    # iterate through elements
                 if(i.__contains__(',')):
                     fp.write(i[0:-1])              # write the data but ignore the , at the end of the string
                     fp.write(' | ')                # and write a dividing ' | ' if there was a ','
@@ -313,8 +316,24 @@ def delete_element(tbl, operation, table_elements, where_var, where_value):
             fp.write("\n")
 
 # handles completing transaction(s) within file
-def transaction(usr_in, data):
-    print('here')
+def transaction(usr_in, fileData):
+    fp = open(usr_in[1], 'r')
+    lockLine = fp.readline()
+    if('1' in lockLine):
+        print('Error: Table ' + usr_in[1] + ' is locked!')
+        return
+    fp.close()
+
+    with open(usr_in[1], 'w') as fp:
+        # change data
+        
+        fp.write('lockFlag = 1')            # lock file
+        fp.write('seat int | status int')   # write data to file
+        for row in fileData:
+                for element in row:
+                    fp.write(str(element) + " | ")
+                fp.write("\n")
+    fileChangeFlag = 1 # the file needs to be comitted
 
 # main fct that handles user input
 def main():
@@ -368,9 +387,9 @@ def main():
             operation = where_arr[2]      # what comparison do we make
             where_value = where_arr[3]    # what value are we looking for
             delete_element(input_list[2], operation, table_elements, where_var, where_value)
-        elif('transaction' in input_list):
+        elif('transaction' in input_list):   
             transaction_in = parse_input()
-            transaction(transaction_in, table_elements)
+            transaction(transaction_in, table_elements) # may need to save returned values in array to update table_elements
             # update table_elements with their new values
             
     
