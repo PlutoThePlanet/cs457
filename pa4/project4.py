@@ -1,6 +1,6 @@
 # Paige Mortensen
 # CS 457 PA 4
-# 12/18/22
+# 12/17/22
 
 import os
 import shutil
@@ -126,35 +126,60 @@ def insert_info_tbl(data):
     else:
         print('!Failed to insert data into table ' + data[2] + ' because it does not exist.')
 
-def query_tbl():
-    pass
+def query_tbl(tbl):
+    test_file = os.path.join(cwd, tbl)
+    if(os.path.exists(test_file)):
+        with open(tbl, 'r') as fp:
+            fp.readline()                  # skips lock flag
+            print(fp.read())               # print entire entry
+    else:
+        print('!Failed to query table ' + tbl + ' because it does not exist.')
 
 # handles completing transaction(s) within file
 def transaction(usr_in, fileData):
+    originalData = fileData
     setVal = usr_in[5]
     whereVal = usr_in[9]
 
-    fp = open(usr_in[1], 'r')
-    lockLine = fp.readline()
-    if('1' in lockLine):
-        print('Error: Table ' + usr_in[1] + ' is locked!')
-        return
-    fp.close()
+    with open(usr_in[1], 'r') as fp:
+        lockLine = fp.readline()
+        if('1' in lockLine):
+            print('Error: Table ' + usr_in[1] + ' is locked!')
+            return
 
-    # test_file = os.path.join(cwd, usr_in[1])
     with open(usr_in[1], 'w') as fp:
-        # change data
-        for row in fileData:
-            if(row[0] == whereVal):
-                row[1] = setVal
-
-        fp.write('lockFlag = 1\n')            # lock file
-        fp.write('seat int | status int\n')   # write data to file
-        for row in fileData:
+        fp.write('lockFlag = 1\n')              # lock file
+        fp.write('seat int | status int\n')     # rewrite original data to file
+        for row in originalData:
+            for elem in row:
+                fp.write(elem)
+                fp.write(' | ')
+            fp.write('\n')
+    
+    # change data
+    changedData = 0
+    for row in fileData:
+        if(row[0] == whereVal):
+            row[1] = setVal
+            changedData += 1
+    print(str(changedData) + ' record modified.')
+    global fileChangeFlag
+    fileChangeFlag = 1 # the file needs to be comitted
+    
+def commit(fileData):
+    if(fileChangeFlag == 1):                        # if there is a change to be committed
+        with open('Flights', 'w') as fp:            # write data to file
+            fp.write('lockFlag = 0\n')              # unlock file
+            fp.write('seat int | status int\n')   
+            for row in fileData:
                 for element in row:
                     fp.write(str(element) + " | ")
                 fp.write("\n")
-    fileChangeFlag = 1 # the file needs to be comitted
+        fileChangeFlag == 0                         # reset change flag
+    else:
+        print('Transaction abort.')
+        return
+    print('Transaction committed.')
 
 # main fct that handles user input
 def main():
@@ -182,11 +207,13 @@ def main():
         elif('insert' in input_list):
             table_elements.append(insert_info_tbl(input_list))
         elif('select' and '*' in input_list):
-            query_tbl()
+            query_tbl(input_list[3])
         elif('transaction' in input_list):
+            print('Transaction starts.')
             transaction_in = parse_input()
-            transaction(transaction_in, table_elements) # may need to save returned values in array to update table_elements
-            # update table_elements with their new values
+            transaction(transaction_in, table_elements)
+        elif('commit' in input_list):
+            commit(table_elements)
             
 # ensures main fct is called first
 if __name__ == "__main__":
